@@ -95,7 +95,7 @@ def create_activity_plot():
     return plot_path
 
 # Función para manejar el comando de actividad de cámara
-@bot.message_handler(commands=['actividad_de_camara'])
+@bot.message_handler(commands=['activity'])
 def handle_activity_command(message):
     plot_path = create_activity_plot()
     if plot_path:

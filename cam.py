@@ -8,6 +8,7 @@ import telebot
 import time
 from datetime import datetime
 from db.db_helper import init_db, get_db_connection  # Actualizar la importación
+import matplotlib.pyplot as plt
 
 # Inicializar la base de datos
 init_db()

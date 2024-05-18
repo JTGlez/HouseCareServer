@@ -1,0 +1,14 @@
+Flask
+pyTelegramBotAPI
+gpiozero
+pydub
+SpeechRecognition
+matplotlib
+plotly
+requests
+python-dotenv
+rpi_ws281x
+adafruit-circuitpython-neopixel
+adafruit-blinka
+adafruit-circuitpython-dht
+pigpio

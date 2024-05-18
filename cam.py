@@ -5,11 +5,14 @@ import os
 sys.path.insert(0, '/usr/lib/python3/dist-packages')
 
 import cv2
-import numpy as np
 
 # Eliminar la versión del sistema de NumPy del PYTHONPATH para Matplotlib
 sys.path.pop(0)
 
+# Añadir la versión del entorno virtual de NumPy al PYTHONPATH para Matplotlib
+sys.path.insert(0, '/home/jorje/HouseCareServer/venv/lib/python3.9/site-packages')
+
+import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 from dotenv import load_dotenv

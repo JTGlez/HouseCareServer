@@ -72,6 +72,7 @@ activity_detected = False
 last_activity_time = None
 activity_start_time = None
 wait_time = 30  # Tiempo de espera en segundos
+capture_delay = 2  # Retraso antes de capturar la imagen representativa
 
 # Captura frames continuamente
 while True:
@@ -92,10 +93,16 @@ while True:
         
         last_activity_time = current_time
         
+        # Introducir un retraso antes de capturar la imagen representativa
+        time.sleep(capture_delay)
+        
         # Captura y guarda la imagen representativa
+        rawCapture.truncate(0)
+        camera.capture(rawCapture, format="bgr")
+        frame_representative = rawCapture.array
         timestamp = str(int(current_time))
         img_name = f"{timestamp}.jpg"
-        cv2.imwrite(img_name, frame2)
+        cv2.imwrite(img_name, frame_representative)
         
         # Envía la imagen a Telegram
         send_image(CHAT_ID, img_name)

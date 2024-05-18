@@ -1,15 +1,24 @@
+import sys
+import os
+
+# Añadir la versión del sistema de NumPy al PYTHONPATH para OpenCV
+sys.path.insert(0, '/usr/lib/python3/dist-packages')
+
 import cv2
 import numpy as np
-import os
+
+# Eliminar la versión del sistema de NumPy del PYTHONPATH para Matplotlib
+sys.path.pop(0)
+
+import matplotlib.pyplot as plt
+import pandas as pd
 from dotenv import load_dotenv
 from picamera.array import PiRGBArray
 from picamera import PiCamera
 import telebot
 import time
 from datetime import datetime
-from db.db_helper import init_db, get_db_connection  # Actualizar la importación
-import matplotlib.pyplot as plt
-import pandas as pd
+from db.db_helper import init_db, get_db_connection
 
 # Inicializar la base de datos
 init_db()

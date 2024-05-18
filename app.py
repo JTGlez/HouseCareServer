@@ -7,14 +7,14 @@ import adafruit_dht
 import speech_recognition as sr
 from gpiozero import MotionSensor, Servo, Button
 from gpiozero.pins.pigpio import PiGPIOFactory
-from signal import pause
 from pydub import AudioSegment
-from datetime import datetime
-from time import sleep
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 # Telegram Bot Instance
-API_TOKEN = '6719036709:AAEDXakggzRoyTLoElmExzKebWwAx7_8jf4'
-CHAT_ID = '5969486508'
+API_TOKEN = os.getenv('API_TOKEN')
+CHAT_ID = os.getenv('CHAT_ID')
 bot = telebot.TeleBot(API_TOKEN)
 stop_event = threading.Event()
 

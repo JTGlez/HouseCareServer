@@ -7,7 +7,7 @@ from picamera import PiCamera
 import telebot
 import time
 from datetime import datetime
-from db_helper import init_db, get_db_connection
+from db.db_helper import init_db, get_db_connection  # Actualizar la importación
 
 # Inicializar la base de datos
 init_db()

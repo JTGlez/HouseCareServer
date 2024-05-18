@@ -1,5 +1,4 @@
-import sqlite3
-from db.db_helper import init_db, get_db_connection  # Actualizar la importación
+from db.db_helper import get_db_connection
 
 def list_activities(limit=10):
     conn = get_db_connection()

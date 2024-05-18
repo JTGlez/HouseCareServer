@@ -10,6 +10,7 @@ from datetime import datetime
 from db.db_helper import init_db, get_db_connection  # Actualizar la importación
 import matplotlib.pyplot as plt
 import pandas as pd
+import threading
 
 # Inicializar la base de datos
 init_db()
@@ -110,49 +111,55 @@ activity_start_time = None
 wait_time = 30  # Tiempo de espera en segundos
 capture_delay = 2  # Retraso antes de capturar la imagen representativa
 
-# Captura frames continuamente
-while True:
-    rawCapture.truncate(0)
-    camera.capture(rawCapture, format="bgr")
-    frame1 = rawCapture.array
-    
-    rawCapture.truncate(0)
-    camera.capture(rawCapture, format="bgr")
-    frame2 = rawCapture.array
-    
-    if detect_movement(frame1, frame2):
-        current_time = time.time()
-        if not activity_detected:
-            activity_detected = True
-            activity_start_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-            print("Movimiento detectado, iniciando periodo de actividad")
-        
-        last_activity_time = current_time
-        
-        # Introducir un retraso antes de capturar la imagen representativa
-        time.sleep(capture_delay)
-        
-        # Captura y guarda la imagen representativa
+# Función para capturar frames continuamente
+def capture_frames():
+    global activity_detected, last_activity_time, activity_start_time
+    while True:
         rawCapture.truncate(0)
         camera.capture(rawCapture, format="bgr")
-        frame_representative = rawCapture.array
-        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-        img_name = os.path.join(PHOTO_DIR, f"{timestamp}.jpg")
-        cv2.imwrite(img_name, frame_representative)
-        
-        # Envía la imagen a Telegram
-        send_image(CHAT_ID, img_name)
-        
-        # Espera un poco antes de volver a detectar
-        time.sleep(5)
-    else:
-        if activity_detected and (time.time() - last_activity_time > wait_time):
-            activity_detected = False
-            activity_end_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-            print("Periodo de actividad finalizado")
-            log_activity(activity_start_time, activity_end_time, img_name)
-            activity_start_time = None
-            last_activity_time = None
+        frame1 = rawCapture.array
+
+        rawCapture.truncate(0)
+        camera.capture(rawCapture, format="bgr")
+        frame2 = rawCapture.array
+
+        if detect_movement(frame1, frame2):
+            current_time = time.time()
+            if not activity_detected:
+                activity_detected = True
+                activity_start_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                print("Movimiento detectado, iniciando periodo de actividad")
+
+            last_activity_time = current_time
+
+            # Introducir un retraso antes de capturar la imagen representativa
+            time.sleep(capture_delay)
+
+            # Captura y guarda la imagen representativa
+            rawCapture.truncate(0)
+            camera.capture(rawCapture, format="bgr")
+            frame_representative = rawCapture.array
+            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+            img_name = os.path.join(PHOTO_DIR, f"{timestamp}.jpg")
+            cv2.imwrite(img_name, frame_representative)
+
+            # Envía la imagen a Telegram
+            send_image(CHAT_ID, img_name)
+
+            # Espera un poco antes de volver a detectar
+            time.sleep(5)
+        else:
+            if activity_detected and (time.time() - last_activity_time > wait_time):
+                activity_detected = False
+                activity_end_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                print("Periodo de actividad finalizado")
+                log_activity(activity_start_time, activity_end_time, img_name)
+                activity_start_time = None
+                last_activity_time = None
+
+# Iniciar el hilo de captura de frames
+capture_thread = threading.Thread(target=capture_frames)
+capture_thread.start()
 
 # Iniciar el bot
 bot.polling()

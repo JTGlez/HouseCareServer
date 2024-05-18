@@ -27,15 +27,16 @@ def send_image(chat_id, image_path):
 def detect_movement(frame1, frame2):
     diff = cv2.absdiff(frame1, frame2)
     gray = cv2.cvtColor(diff, cv2.COLOR_BGR2GRAY)
-    blur = cv2.GaussianBlur(gray, (5, 5), 0)
-    _, thresh = cv2.threshold(blur, 20, 255, cv2.THRESH_BINARY)
-    dilated = cv2.dilate(thresh, None, iterations=3)
+    blur = cv2.GaussianBlur(gray, (21, 21), 0)  # Aumentar el tamaño del kernel
+    _, thresh = cv2.threshold(blur, 30, 255, cv2.THRESH_BINARY)  # Aumentar el umbral
+    dilated = cv2.dilate(thresh, None, iterations=2)  # Reducir el número de iteraciones
     contours, _ = cv2.findContours(dilated, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     for contour in contours:
-        if cv2.contourArea(contour) < 900:
+        if cv2.contourArea(contour) < 1500:  # Aumentar el área mínima del contorno
             continue
         return True
     return False
+
 
 # Captura frames continuamente
 while True:

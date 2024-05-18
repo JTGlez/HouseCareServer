@@ -12,3 +12,4 @@ adafruit-circuitpython-neopixel
 adafruit-blinka
 adafruit-circuitpython-dht
 pigpio
+numpy

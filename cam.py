@@ -1,25 +1,13 @@
-import sys
-import os
-
-# Añadir la versión del sistema de NumPy al PYTHONPATH para OpenCV
-sys.path.insert(0, '/usr/lib/python3/dist-packages')
 import cv2
-
-# Eliminar la versión del sistema de NumPy del PYTHONPATH para Matplotlib
-sys.path.pop(0)
-
-# Añadir la versión del entorno virtual de NumPy al PYTHONPATH para Matplotlib
-sys.path.insert(0, '/home/jorje/HouseCareServer/venv/lib/python3.9/site-packages')
 import numpy as np
-import matplotlib.pyplot as plt
-import pandas as pd
+import os
 from dotenv import load_dotenv
 from picamera.array import PiRGBArray
 from picamera import PiCamera
 import telebot
 import time
 from datetime import datetime
-from db.db_helper import init_db, get_db_connection
+from db.db_helper import init_db, get_db_connection  # Actualizar la importación
 
 # Inicializar la base de datos
 init_db()
@@ -69,49 +57,6 @@ def log_activity(start_time, end_time, image_path):
     ''', (start_time, end_time, image_path))
     conn.commit()
     conn.close()
-
-# Función para obtener los registros de actividad
-def get_activity_data():
-    conn = get_db_connection()
-    c = conn.cursor()
-    c.execute('SELECT * FROM activity ORDER BY start_time DESC')
-    rows = c.fetchall()
-    conn.close()
-    return rows
-
-# Función para crear la gráfica de actividad
-def create_activity_plot():
-    data = get_activity_data()
-    if not data:
-        return None
-
-    df = pd.DataFrame(data, columns=['ID', 'Start Time', 'End Time', 'Image Path'])
-    df['Start Time'] = pd.to_datetime(df['Start Time'])
-    df['End Time'] = pd.to_datetime(df['End Time'])
-
-    plt.figure(figsize=(10, 6))
-    for _, row in df.iterrows():
-        plt.plot([row['Start Time'], row['End Time']], [1, 1], marker='o')
-
-    plt.xlabel('Time')
-    plt.ylabel('Activity')
-    plt.title('Activity Periods')
-    plt.grid(True)
-    plt.tight_layout()
-
-    plot_path = os.path.join(PHOTO_DIR, 'activity_plot.png')
-    plt.savefig(plot_path)
-    plt.close()
-    return plot_path
-
-# Función para manejar el comando de actividad de cámara
-@bot.message_handler(commands=['actividad_de_camara'])
-def handle_activity_command(message):
-    plot_path = create_activity_plot()
-    if plot_path:
-        send_image(message.chat.id, plot_path)
-    else:
-        bot.send_message(message.chat.id, "No hay datos de actividad disponibles.")
 
 # Variables para el control de periodos de actividad
 activity_detected = False
@@ -163,6 +108,3 @@ while True:
             log_activity(activity_start_time, activity_end_time, img_name)
             activity_start_time = None
             last_activity_time = None
-
-# Iniciar el bot
-bot.polling()

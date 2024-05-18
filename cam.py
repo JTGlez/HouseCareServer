@@ -6,8 +6,11 @@ from picamera.array import PiRGBArray
 from picamera import PiCamera
 import telebot
 import time
-import sqlite3
 from datetime import datetime
+from db_helper import init_db, get_db_connection
+
+# Inicializar la base de datos
+init_db()
 
 # Cargar variables de entorno
 load_dotenv()
@@ -20,22 +23,10 @@ camera = PiCamera()
 camera.resolution = (640, 480)
 rawCapture = PiRGBArray(camera, size=(640, 480))
 
-# Inicializar la base de datos
-def init_db():
-    conn = sqlite3.connect('activity_log.db')
-    c = conn.cursor()
-    c.execute('''
-        CREATE TABLE IF NOT EXISTS activity (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            start_time TEXT,
-            end_time TEXT,
-            image_path TEXT
-        )
-    ''')
-    conn.commit()
-    conn.close()
-
-init_db()
+# Directorio para guardar las fotos
+PHOTO_DIR = 'photos'
+if not os.path.exists(PHOTO_DIR):
+    os.makedirs(PHOTO_DIR)
 
 # Función para enviar imagen a Telegram
 def send_image(chat_id, image_path):
@@ -58,7 +49,7 @@ def detect_movement(frame1, frame2):
 
 # Función para registrar actividad en la base de datos
 def log_activity(start_time, end_time, image_path):
-    conn = sqlite3.connect('activity_log.db')
+    conn = get_db_connection()
     c = conn.cursor()
     c.execute('''
         INSERT INTO activity (start_time, end_time, image_path)
@@ -100,8 +91,8 @@ while True:
         rawCapture.truncate(0)
         camera.capture(rawCapture, format="bgr")
         frame_representative = rawCapture.array
-        timestamp = str(int(current_time))
-        img_name = f"{timestamp}.jpg"
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        img_name = os.path.join(PHOTO_DIR, f"{timestamp}.jpg")
         cv2.imwrite(img_name, frame_representative)
         
         # Envía la imagen a Telegram

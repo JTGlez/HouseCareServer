@@ -139,6 +139,12 @@ capture_delay = 2  # Retraso antes de capturar la imagen representativa
 # Función para capturar frames continuamente
 def capture_frames():
     global activity_detected, last_activity_time, activity_start_time
+
+    # Ignorar los primeros 10 fotogramas para evitar lecturas falsas al inicio
+    for _ in range(10):
+        rawCapture.truncate(0)
+        camera.capture(rawCapture, format="bgr")
+
     while True:
         rawCapture.truncate(0)
         camera.capture(rawCapture, format="bgr")

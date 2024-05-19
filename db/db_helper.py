@@ -21,3 +21,21 @@ def init_db():
 def get_db_connection():
     conn = sqlite3.connect(DB_PATH)
     return conn
+
+def log_activity(start_time, end_time, image_path):
+    conn = get_db_connection()
+    c = conn.cursor()
+    c.execute('''
+        INSERT INTO activity (start_time, end_time, image_path)
+        VALUES (?, ?, ?)
+    ''', (start_time, end_time, image_path))
+    conn.commit()
+    conn.close()
+
+def get_activity_data():
+    conn = get_db_connection()
+    c = conn.cursor()
+    c.execute('SELECT * FROM activity ORDER BY start_time DESC')
+    rows = c.fetchall()
+    conn.close()
+    return rows

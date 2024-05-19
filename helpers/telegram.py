@@ -5,7 +5,7 @@ from db.db_helper import get_activity_data
 import matplotlib.pyplot as plt
 import pandas as pd
 import random
-import _datetime
+from datetime import datetime
 
 
 load_dotenv()
@@ -50,7 +50,7 @@ def create_activity_plot():
     df['End Time'] = pd.to_datetime(df['End Time'])
 
     # Filtrar los datos para el día actual
-    today = _datetime.now().date()
+    today = datetime.now().date()
     df = df[df['Start Time'].dt.date == today]
 
     if df.empty:

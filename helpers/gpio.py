@@ -6,6 +6,7 @@ from gpiozero import MotionSensor, Servo, Button
 from gpiozero.pins.pigpio import PiGPIOFactory
 import os
 from dotenv import load_dotenv
+from helpers.telegram import bot
 
 load_dotenv()
 API_TOKEN = os.getenv('API_TOKEN')
@@ -36,6 +37,22 @@ def setup_gpio(emergency_callback, motion_start_callback, motion_end_callback):
     button.when_pressed = emergency_callback
     pir.when_motion = motion_start_callback
     pir.when_no_motion = motion_end_callback
+
+def emergency():
+    print("El botón fue presionado!")
+    mensaje_alerta = (
+        "\U0001F6A8\U0001F6A8 ALERTA DE EMERGENCIA \U0001F6A8\U0001F6A8\n\n"
+        "El familiar ha enviado una alerta de que no se siente bien y debe ser atendido de inmediato."
+    )
+    bot.send_message(CHAT_ID, mensaje_alerta)
+
+def abrir_puerta():
+    servo.max()  # Ajusta esto según la necesidad de tu servo para abrir la puerta
+    print("Puerta abierta")
+
+def cerrar_puerta():
+    servo.min()  # Ajusta esto según la necesidad de tu servo para cerrar la puerta
+    print("Puerta cerrada")
 
 def read_dht11():
     start_time = time.time()  # Guarda el tiempo de inicio

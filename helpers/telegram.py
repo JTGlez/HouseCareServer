@@ -6,7 +6,8 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import random
 from datetime import datetime
-
+from helpers.utils import convert_ogg_to_wav, recognize_speech_from_audio
+from helpers.gpio import turn_on_leds, turn_off_leds, abrir_puerta, cerrar_puerta, read_dht11
 
 load_dotenv()
 API_TOKEN = os.getenv('API_TOKEN')
@@ -86,3 +87,41 @@ def create_activity_plot():
     plt.savefig(plot_path)
     plt.close()
     return plot_path
+
+def handle_voice_message(bot, message):
+    file_info = bot.get_file(message.voice.file_id)
+    downloaded_file = bot.download_file(file_info.file_path)
+
+    with open('voice.ogg', 'wb') as new_file:
+        new_file.write(downloaded_file)
+    
+    # Convertir .ogg a .wav
+    convert_ogg_to_wav("voice.ogg", "voice.wav")
+
+    text = recognize_speech_from_audio("voice.wav")
+    if text:
+        print(text)
+        if "encender luz" in text:
+            print('Encendiendo luz')
+            turn_on_leds()
+            bot.reply_to(message, "Luz encendida")
+        elif "apagar luz" in text:
+            print('Apagando luz')
+            turn_off_leds()
+            bot.reply_to(message, "Luz apagada")
+        elif "abrir puerta" in text:
+            print('Abriendo puerta')
+            abrir_puerta()
+            bot.reply_to(message, "Puerta abierta")
+        elif "cerrar puerta" in text:
+            print('Cerrando puerta')
+            cerrar_puerta()
+            bot.reply_to(message, "Puerta cerrada")
+        elif "temperatura actual" in text:
+            respuesta = read_dht11()
+            bot.reply_to(message, respuesta)
+        else:
+            print("Comando no reconocido")
+            bot.reply_to(message, "Comando no reconocido")
+    else:
+        bot.reply_to(message, "No pude entender el audio")

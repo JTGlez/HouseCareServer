@@ -8,6 +8,7 @@ from picamera import PiCamera
 from helpers.camera import detect_movement, initialize_camera
 from helpers.telegram import send_image, notify_movement_start, notify_movement_end, notify_activity_log
 from db.db_helper import log_activity
+from helpers.gpio import turn_on_leds, turn_off_leds
 
 # Configurar la cámara
 camera, rawCapture = initialize_camera()
@@ -43,6 +44,9 @@ def capture_frames():
                 activity_start_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 print("Movimiento detectado, iniciando periodo de actividad")
                 notify_movement_start(activity_start_time)
+                
+                # Encender las luces LED
+                turn_on_leds()
 
             last_activity_time = current_time
 
@@ -70,5 +74,9 @@ def capture_frames():
                 notify_movement_end(activity_end_time)
                 log_activity(activity_start_time, activity_end_time, img_name)
                 notify_activity_log(activity_start_time, activity_end_time)
+                
+                # Apagar las luces LED
+                turn_off_leds()
+                
                 activity_start_time = None
                 last_activity_time = None

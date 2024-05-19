@@ -50,8 +50,6 @@ def help_message(message):
     - 📊 */activity*: Muestra la gráfica de actividad reciente.
     - 💡 *Encender luz*: Enciende la tira de LEDs.
     - 💡 *Apagar luz*: Apaga la tira de LEDs.
-    - 📅 *Fecha*: Te diré la fecha actual.
-    - ⏰ *Hora*: Te diré la hora actual.
     - 🚪 *Abrir puerta*: Abre la puerta.
     - 🚪 *Cerrar puerta*: Cierra la puerta.
     - 🌡️ *Temperatura actual*: Muestra la temperatura y humedad actuales.

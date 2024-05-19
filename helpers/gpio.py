@@ -26,6 +26,10 @@ def turn_off_leds():
     pixels.fill((0, 0, 0))
     pixels.show()
 
+def set_led_color(color):
+    pixels.fill(color)
+    pixels.show()
+
 # GPIO Init
 factory = PiGPIOFactory()
 button = Button(23)
@@ -39,12 +43,23 @@ def setup_gpio(emergency_callback, motion_start_callback, motion_end_callback):
     pir.when_no_motion = motion_end_callback
 
 def emergency(bot):
+    global previous_color
     print("El botón fue presionado!")
     mensaje_alerta = (
         "\U0001F6A8\U0001F6A8 ALERTA DE EMERGENCIA \U0001F6A8\U0001F6A8\n\n"
         "El familiar ha enviado una alerta de que no se siente bien y debe ser atendido de inmediato."
     )
     bot.send_message(os.getenv('CHAT_ID'), mensaje_alerta)
+    
+    # Guardar el estado anterior de las luces
+    previous_color = pixels[0]
+    
+    # Cambiar las luces a color rojo
+    set_led_color((255, 0, 0))
+    
+    # Esperar unos segundos y luego regresar al estado anterior
+    time.sleep(5)
+    set_led_color(previous_color)
 
 def abrir_puerta():
     servo.max()  # Ajusta esto según la necesidad de tu servo para abrir la puerta

@@ -124,6 +124,7 @@ def create_activity_plot():
 def handle_activity_command(message):
     plot_path = create_activity_plot()
     if plot_path:
+        bot.send_message(message.chat.id, "📊 *Gráfica de Actividad Reciente* 📊\n\nAquí tienes la gráfica de los movimientos detectados hoy:", parse_mode='Markdown')
         send_image(message.chat.id, plot_path)
     else:
         bot.send_message(message.chat.id, "No hay datos de actividad disponibles.")

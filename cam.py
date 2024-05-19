@@ -11,6 +11,7 @@ from db.db_helper import init_db, get_db_connection  # Actualizar la importació
 import matplotlib.pyplot as plt
 import pandas as pd
 import threading
+import random
 
 # Inicializar la base de datos
 init_db()
@@ -61,7 +62,6 @@ def log_activity(start_time, end_time, image_path):
     conn.commit()
     conn.close()
 
-
 # Función para obtener los registros de actividad
 def get_activity_data():
     conn = get_db_connection()
@@ -81,38 +81,37 @@ def create_activity_plot():
     df['Start Time'] = pd.to_datetime(df['Start Time'])
     df['End Time'] = pd.to_datetime(df['End Time'])
 
-    # Filtrar los datos para la última hora
-    one_hour_ago = datetime.now() - timedelta(hours=1)
-    df = df[df['Start Time'] >= one_hour_ago]
+    # Filtrar los datos para el día actual
+    today = datetime.now().date()
+    df = df[df['Start Time'].dt.date == today]
 
     if df.empty:
         return None
 
-    # Crear el gráfico de barras horizontales
-    fig, ax = plt.subplots(figsize=(12, 8))
-    for index, row in df.iterrows():
-        start_time = row['Start Time']
-        end_time = row['End Time']
-        duration = (end_time - start_time).total_seconds() / 60
-        ax.barh(y=index, width=duration, left=start_time, height=0.4, align='center', label=f"ID: {row['ID']}")
+    times = []
+    durations = []
 
-        # Añadir etiquetas de tiempo en las barras
-        ax.text(start_time, index, f"{start_time.strftime('%H:%M:%S')}", va='center', ha='right', fontsize=8, color='white', backgroundcolor='black')
-        ax.text(end_time, index, f"{end_time.strftime('%H:%M:%S')}", va='center', ha='left', fontsize=8, color='white', backgroundcolor='black')
+    for entry in df.itertuples():
+        start_time = entry._2
+        end_time = entry._3
+        duration = (end_time - start_time).total_seconds()
+        
+        time_str = start_time.strftime("%H:%M")
+        times.append(time_str)
+        durations.append(duration)
 
-    ax.set_xlabel('Tiempo (minutos)')
-    ax.set_ylabel('Períodos de Actividad')
-    ax.set_title('Períodos de Actividad en la Última Hora')
-    ax.grid(True)
+    colors = ['#%06X' % random.randint(0, 0xFFFFFF) for _ in range(len(times))]
+    plt.figure(figsize=(10, 6))
+    plt.plot(times, durations, marker='o', linestyle='-', color='b')  # Conectar los puntos con líneas
 
-    # Formatear el eje x para mostrar las horas y minutos
-    ax.xaxis_date()
-    fig.autofmt_xdate()
+    for i in range(len(times)):
+        plt.plot(times[i], durations[i], 'o', color=colors[i])
 
-    # Añadir leyenda
-    handles, labels = ax.get_legend_handles_labels()
-    ax.legend(handles, labels, loc='upper right', fontsize='small')
-
+    plt.xlabel('Hora')
+    plt.ylabel('Duración del Movimiento (segundos)')
+    plt.title(f'Movimientos el {today.strftime("%Y-%m-%d")}')
+    plt.grid(True, axis='y')
+    plt.xticks(rotation=45)
     plt.tight_layout()
 
     plot_path = os.path.join(PHOTO_DIR, 'activity_plot.png')

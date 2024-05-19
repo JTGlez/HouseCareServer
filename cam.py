@@ -95,7 +95,6 @@ def create_activity_plot():
         start_time = entry._2
         end_time = entry._3
         duration = (end_time - start_time).total_seconds()
-        
         time_str = start_time.strftime("%H:%M")
         times.append(time_str)
         durations.append(duration)
@@ -139,6 +138,11 @@ capture_delay = 2  # Retraso antes de capturar la imagen representativa
 # Función para capturar frames continuamente
 def capture_frames():
     global activity_detected, last_activity_time, activity_start_time
+
+    for _ in range(10):
+        rawCapture.truncate(0)
+        camera.capture(rawCapture, format="bgr")
+
     while True:
         rawCapture.truncate(0)
         camera.capture(rawCapture, format="bgr")

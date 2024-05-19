@@ -153,6 +153,7 @@ def capture_frames():
                 activity_detected = True
                 activity_start_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 print("Movimiento detectado, iniciando periodo de actividad")
+                bot.send_message(CHAT_ID, f"Nuevo periodo de movimiento detectado a las {activity_start_time}")
 
             last_activity_time = current_time
 
@@ -177,7 +178,9 @@ def capture_frames():
                 activity_detected = False
                 activity_end_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 print("Periodo de actividad finalizado")
+                bot.send_message(CHAT_ID, f"Periodo de movimiento finalizado a las {activity_end_time}")
                 log_activity(activity_start_time, activity_end_time, img_name)
+                print(f"Se añadirá un nuevo registro de movimiento que inició en {activity_start_time} y acabó en {activity_end_time}")
                 activity_start_time = None
                 last_activity_time = None
 

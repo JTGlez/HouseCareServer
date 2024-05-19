@@ -1,7 +1,7 @@
 import os
 import telebot
 from dotenv import load_dotenv
-from helpers.database import get_activity_data
+from db.db_helper import get_activity_data
 import matplotlib.pyplot as plt
 import pandas as pd
 import random

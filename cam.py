@@ -6,7 +6,7 @@ from picamera.array import PiRGBArray
 from picamera import PiCamera
 import telebot
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 from db.db_helper import init_db, get_db_connection  # Actualizar la importación
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -80,14 +80,23 @@ def create_activity_plot():
     df['Start Time'] = pd.to_datetime(df['Start Time'])
     df['End Time'] = pd.to_datetime(df['End Time'])
 
-    plt.figure(figsize=(10, 6))
-    for _, row in df.iterrows():
-        plt.plot([row['Start Time'], row['End Time']], [1, 1], marker='o')
+    # Filtrar los datos para la última hora
+    one_hour_ago = datetime.now() - timedelta(hours=1)
+    df = df[df['Start Time'] >= one_hour_ago]
 
-    plt.xlabel('Time')
-    plt.ylabel('Activity')
-    plt.title('Activity Periods')
-    plt.grid(True)
+    if df.empty:
+        return None
+
+    # Crear el gráfico de barras horizontales
+    fig, ax = plt.subplots(figsize=(10, 6))
+    for index, row in df.iterrows():
+        ax.barh(y=index, width=(row['End Time'] - row['Start Time']).total_seconds() / 60,
+                left=row['Start Time'], height=0.4, align='center')
+
+    ax.set_xlabel('Time (minutes)')
+    ax.set_ylabel('Activity Periods')
+    ax.set_title('Activity Periods in the Last Hour')
+    ax.grid(True)
     plt.tight_layout()
 
     plot_path = os.path.join(PHOTO_DIR, 'activity_plot.png')

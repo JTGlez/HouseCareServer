@@ -88,15 +88,24 @@ def create_activity_plot():
         return None
 
     # Crear el gráfico de barras horizontales
-    fig, ax = plt.subplots(figsize=(10, 6))
+    fig, ax = plt.subplots(figsize=(12, 8))
     for index, row in df.iterrows():
         ax.barh(y=index, width=(row['End Time'] - row['Start Time']).total_seconds() / 60,
-                left=row['Start Time'], height=0.4, align='center')
+                left=row['Start Time'], height=0.4, align='center', label=f"{row['Start Time']} - {row['End Time']}")
 
-    ax.set_xlabel('Time (minutes)')
-    ax.set_ylabel('Activity Periods')
-    ax.set_title('Activity Periods in the Last Hour')
+    ax.set_xlabel('Tiempo (minutos)')
+    ax.set_ylabel('Períodos de Actividad')
+    ax.set_title('Períodos de Actividad en la Última Hora')
     ax.grid(True)
+
+    # Formatear el eje x para mostrar las horas y minutos
+    ax.xaxis_date()
+    fig.autofmt_xdate()
+
+    # Añadir leyenda
+    handles, labels = ax.get_legend_handles_labels()
+    ax.legend(handles, labels, loc='upper right', fontsize='small')
+
     plt.tight_layout()
 
     plot_path = os.path.join(PHOTO_DIR, 'activity_plot.png')

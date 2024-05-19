@@ -38,13 +38,13 @@ def setup_gpio(emergency_callback, motion_start_callback, motion_end_callback):
     pir.when_motion = motion_start_callback
     pir.when_no_motion = motion_end_callback
 
-def emergency():
+def emergency(bot):
     print("El botón fue presionado!")
     mensaje_alerta = (
         "\U0001F6A8\U0001F6A8 ALERTA DE EMERGENCIA \U0001F6A8\U0001F6A8\n\n"
         "El familiar ha enviado una alerta de que no se siente bien y debe ser atendido de inmediato."
     )
-    bot.send_message(CHAT_ID, mensaje_alerta)
+    bot.send_message(os.getenv('CHAT_ID'), mensaje_alerta)
 
 def abrir_puerta():
     servo.max()  # Ajusta esto según la necesidad de tu servo para abrir la puerta

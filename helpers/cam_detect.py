@@ -4,8 +4,8 @@ import cv2
 from datetime import datetime
 from picamera.array import PiRGBArray
 from picamera import PiCamera
-from camera import detect_movement, initialize_camera
-from telegram import send_image, notify_movement_start, notify_movement_end, notify_activity_log
+from helpers.camera import detect_movement, initialize_camera
+from helpers.telegram import send_image, notify_movement_start, notify_movement_end, notify_activity_log
 from db.db_helper import log_activity
 
 # Configurar la cámara

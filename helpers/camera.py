@@ -1,3 +1,4 @@
+# Módulo de utilidades específicas para inicializar la cámara y detectar movimiento en los fotogramas capturados.
 import cv2
 from picamera import PiCamera
 from picamera.array import PiRGBArray

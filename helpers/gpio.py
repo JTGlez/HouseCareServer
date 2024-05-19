@@ -1,3 +1,4 @@
+# Define los manejadores y funciones específicas que usan puertos GPIO: tira led, botones, servomotres y sensores de movimiento PIR.
 import board
 import time
 import neopixel

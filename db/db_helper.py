@@ -1,3 +1,4 @@
+# Utilidades para crear una base de datos SQLite, registrar actividad y obtener registros de actividad
 import sqlite3
 import os
 

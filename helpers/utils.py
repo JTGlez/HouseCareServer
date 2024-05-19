@@ -1,4 +1,4 @@
-import os
+# Utilidades de conversión de audio y reconocimiento de voz
 from pydub import AudioSegment
 import speech_recognition as sr
 

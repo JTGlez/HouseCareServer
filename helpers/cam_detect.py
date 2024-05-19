@@ -1,3 +1,4 @@
+# Módulo de algoritmo de detección de movimiento en la cámara
 import time
 import os
 import cv2

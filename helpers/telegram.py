@@ -1,3 +1,4 @@
+# Módulo de Telebot: define las funciones de envío y recepción de mensajes en el chat de Telegram..
 import os
 import telebot
 from dotenv import load_dotenv

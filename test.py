@@ -1,6 +1,10 @@
 import threading
 from bot import start_bot
 from helpers.cam_detect import capture_frames
+from helpers.gpio import setup_gpio, emergency, abrir_puerta, cerrar_puerta
+
+# Configurar GPIO
+setup_gpio(emergency, abrir_puerta, cerrar_puerta)
 
 # Iniciar el hilo de captura de frames
 capture_thread = threading.Thread(target=capture_frames)

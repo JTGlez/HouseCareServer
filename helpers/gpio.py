@@ -6,7 +6,6 @@ from gpiozero import MotionSensor, Servo, Button
 from gpiozero.pins.pigpio import PiGPIOFactory
 import os
 from dotenv import load_dotenv
-from helpers.telegram import bot
 
 load_dotenv()
 API_TOKEN = os.getenv('API_TOKEN')

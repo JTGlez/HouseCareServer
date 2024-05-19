@@ -61,6 +61,7 @@ def log_activity(start_time, end_time, image_path):
     conn.commit()
     conn.close()
 
+
 # Función para obtener los registros de actividad
 def get_activity_data():
     conn = get_db_connection()
@@ -96,8 +97,8 @@ def create_activity_plot():
         ax.barh(y=index, width=duration, left=start_time, height=0.4, align='center', label=f"ID: {row['ID']}")
 
         # Añadir etiquetas de tiempo en las barras
-        ax.text(start_time, index, f"{start_time.strftime('%H:%M:%S')}", va='center', ha='right', fontsize=8, color='black')
-        ax.text(end_time, index, f"{end_time.strftime('%H:%M:%S')}", va='center', ha='left', fontsize=8, color='black')
+        ax.text(start_time, index, f"{start_time.strftime('%H:%M:%S')}", va='center', ha='right', fontsize=8, color='white', backgroundcolor='black')
+        ax.text(end_time, index, f"{end_time.strftime('%H:%M:%S')}", va='center', ha='left', fontsize=8, color='white', backgroundcolor='black')
 
     ax.set_xlabel('Tiempo (minutos)')
     ax.set_ylabel('Períodos de Actividad')

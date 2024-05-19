@@ -90,8 +90,14 @@ def create_activity_plot():
     # Crear el gráfico de barras horizontales
     fig, ax = plt.subplots(figsize=(12, 8))
     for index, row in df.iterrows():
-        ax.barh(y=index, width=(row['End Time'] - row['Start Time']).total_seconds() / 60,
-                left=row['Start Time'], height=0.4, align='center', label=f"{row['Start Time']} - {row['End Time']}")
+        start_time = row['Start Time']
+        end_time = row['End Time']
+        duration = (end_time - start_time).total_seconds() / 60
+        ax.barh(y=index, width=duration, left=start_time, height=0.4, align='center', label=f"ID: {row['ID']}")
+
+        # Añadir etiquetas de tiempo en las barras
+        ax.text(start_time, index, f"{start_time.strftime('%H:%M:%S')}", va='center', ha='right', fontsize=8, color='black')
+        ax.text(end_time, index, f"{end_time.strftime('%H:%M:%S')}", va='center', ha='left', fontsize=8, color='black')
 
     ax.set_xlabel('Tiempo (minutos)')
     ax.set_ylabel('Períodos de Actividad')
